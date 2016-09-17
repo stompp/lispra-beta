@@ -8,7 +8,7 @@
  */
 
 
-function lispra_beta_hello_shortcode($atts, $content = null) {
+function lispra_beta_hello_shortcode($atts, $content = "") {
 
     $output = '';
 
@@ -24,12 +24,7 @@ function lispra_beta_hello_shortcode($atts, $content = null) {
             . wp_kses_post($a['from'])
             . "nindelierien.</strong> Welcom to our Lispra Beta Domains";
     $output .= '</div>';
-    if (!is_null($content)) {
-        $output .= '<div class="alert alert-warning">';
-        $output .= $content;
-        $output .= '</div>';
-    }
-
+ 
     return $output;
 }
 
@@ -65,3 +60,4 @@ add_shortcode('lispra_dismissable_alert', 'lispra_component_short_code');
 add_shortcode('lispra_modal', 'lispra_component_short_code');
 add_shortcode('lispra_user_list_of_lists_panel', 'lispra_component_short_code');
 add_shortcode('lispra_user_list_panel', 'lispra_component_short_code');
+add_shortcode('lispra_test_api_box', 'lispra_component_short_code');

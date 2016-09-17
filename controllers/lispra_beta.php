@@ -51,6 +51,17 @@ class JSON_API_Lispra_Beta_Controller {
         $json_api->error("YOU CANNOT PASSS");
     }
 
+    public function action() {
+        $current_user = wp_get_current_user();
+        $current_user_id = $current_user->ID;
+        $output = "ACTION DEFAULT OUTPUT";
+        ob_start();
+        require_once LISPRA_PATH.'actions.php';
+        $output = ob_get_contents();
+        ob_end_clean();
+        return $output;
+    }
+
 }
 
 ?>

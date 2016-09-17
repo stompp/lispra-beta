@@ -10,10 +10,15 @@ License: GPLv2
 */
 
 /** Absolute path to the Lispra Lib */
+define('LISPRA_PATH', 'lispra/');
 define('LISPRA_LIB_PATH', '/lispra/');
 
 function get_lispra_lib_path(){
     return LISPRA_LIB_PATH;
+}
+function lispra_lib_uri($p = ''){
+    
+    return LISPRA_LIB_PATH . $p;
 }
 
 /** enqueues Styles and Scripts */
