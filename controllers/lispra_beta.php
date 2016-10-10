@@ -1,58 +1,66 @@
 <?php
 
 /*
-  Controller name: Lispra B3t4
+  Controller name: Lispra Beta
   Controller description: Lispra Beta REST Controller ou yeah
   Controller Author: Riggitt
   Controller Author Twitter: @akakaka
   Controller Author Website: ak.com
  */
-require_once LISPRA_PATH . 'LispraRestApi.php';
-
-
-function checkAuth() {
-    global $json_api;
-    global $lispraREST;
-
-    if (!$lispraREST->isUserSet()) {
-        $json_api->error("YOU CANNNOT PASSS!!!");
-        return false;
-    }
-    return true;
-}
-
-function checkQueryNotNulloEmptyRequiredKeys($keys) {
-    global $json_api;
-
-    foreach ($keys as $key) {
-        if ((!is_null($key)) && isNullorEmpty($json_api->query->get($key))) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-function getQueryDefaultParams($defaults) {
-    global $json_api;
-
-    $o = array();
-    foreach ($defaults as $key => $value) {
-        if (!isNullorEmpty($key)) {
-            $v = $json_api->query->get($key);
-//        $json_api->query->{$key} = $value;
-            if (is_null($v)) {
-                $o[$key] = $value;
-            } else {
-                $o[$key] = $v;
-            }
-        }
-    }
-
-    return $o;
-}
 
 class JSON_API_Lispra_Beta_Controller {
+
+    public function __construct() {
+        require_once locate_in_lispra('LispraRestApi.php');
+        require_once locate_in_lispra('LispraIdeas.php');
+    }
+
+    private function checkAuth() {
+        global $json_api;
+        global $lispraREST;
+
+        if (!$lispraREST->isUserSet()) {
+            $json_api->error("YOU CANNNOT PASSS!!!");
+            return false;
+        }
+        return true;
+    }
+
+    private function checkQueryNotNulloEmptyRequiredKeys($keys) {
+        global $json_api;
+
+        foreach ($keys as $key) {
+            if ((!is_null($key)) && isNullorEmpty($json_api->query->get($key))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function getQueryDefaultParams($defaults) {
+        global $json_api;
+
+        $o = array();
+        foreach ($defaults as $key => $value) {
+            if (!isNullorEmpty($key)) {
+                $v = $json_api->query->get($key);
+                $o[$key] = (is_null($v)) ? $value : urldecode($v);
+
+//            if (is_null($v)) {
+//                $o[$key] = $value;
+//            } else {
+//                $o[$key] = $v;
+//            }
+            }
+        }
+
+        return $o;
+    }
+
+    private function pfunc() {
+        return array("message" => "im private");
+    }
 
     public function hello() {
         global $json_api;
@@ -151,35 +159,35 @@ class JSON_API_Lispra_Beta_Controller {
         global $lispraREST;
 
         $defaults = array(
-            "t" => "test",
             "embed" => "true"
         );
 
-        $data = getQueryDefaultParams($defaults);
 
-        $content = $lispraREST->test_scr($data["t"]);
+        $data = $this->getQueryDefaultParams($defaults);
 
-        if(isJson($content)){
-            $content = json_decode($content,true);
+        $content = $lispraREST->test_scr();
+
+        if (isJson($content)) {
+            $content = json_decode($content, true);
         }
-        if ($data["embed"] == "true") {
-            return array(
-                "response" => $content
-            );
-        }
-        return $content;
+//        if ($data["embed"] == "true") {
+        return array(
+            "response" => $content
+        );
+//        }
+//        return $content;
     }
 
     public function createList() {
         global $json_api;
         global $lispraREST;
-        if (!checkAuth()) {
+        if (!$this->checkAuth()) {
             return;
         }
         $requiredKeys = array(
             LISPRA_KEY_LIST_NAME
         );
-        if (!checkQueryNotNulloEmptyRequiredKeys($requiredKeys)) {
+        if (!$this->checkQueryNotNulloEmptyRequiredKeys($requiredKeys)) {
             $json_api->error("REQUIRED KEYS MISSING");
             return;
         }
@@ -192,7 +200,7 @@ class JSON_API_Lispra_Beta_Controller {
             LISPRA_KEY_LIST_CLASS => LISPRA_LIST_CLASS_TODO
         );
 
-        $data = getQueryDefaultParams($defaults);
+        $data = $this->getQueryDefaultParams($defaults);
 //$json_api->error($data[LISPRA_KEY_LIST_NAME]." ".$data[LISPRA_KEY_LIST_CLASS]);
 //        global $json_api;
 //        global $lispraREST;
@@ -230,7 +238,7 @@ class JSON_API_Lispra_Beta_Controller {
 
     public function getLists() {
 
-        if (!checkAuth()) {
+        if (!$this->checkAuth()) {
             return;
         }
 
@@ -265,6 +273,74 @@ class JSON_API_Lispra_Beta_Controller {
 
     public function pf() {
         return "this was private";
+    }
+
+    // IDEAS //
+
+    public function getIdeas() {
+        global $json_api;
+
+        $user_id = LispraCore::getCurrentLispraUserID();
+
+        if ($user_id) {
+            return array(
+                "response" => LispraIdeas::userGetIdeas($user_id));
+        }
+
+        $json_api->error("U CANNOT PASS");
+    }
+
+    public function getIdea() {
+        global $json_api;
+
+        $user_id = LispraCore::getCurrentLispraUserID();
+        $params = $this->getQueryDefaultParams(array(LispraIdeas::IDEA_ID => null));
+
+        if ($user_id) {
+            return array(
+                "response" => LispraIdeas::userGetIdeas($user_id));
+        }
+
+        $json_api->error("U CANNOT PASS");
+    }
+
+    public function createIdea() {
+        global $json_api;
+
+        $user_id = LispraCore::getCurrentLispraUserID();
+
+        if ($user_id) {
+            return array(
+                "response" => LispraIdeas::userGetIdeas($user_id));
+        }
+
+        $json_api->error("U CANNOT PASS");
+    }
+
+    public function updateIdea() {
+        global $json_api;
+
+        $user_id = LispraCore::getCurrentLispraUserID();
+
+        if ($user_id) {
+            return array(
+                "response" => LispraIdeas::userGetIdeas($user_id));
+        }
+
+        $json_api->error("U CANNOT PASS");
+    }
+
+    public function deleteIdea() {
+        global $json_api;
+
+        $user_id = LispraCore::getCurrentLispraUserID();
+
+        if ($user_id) {
+            return array(
+                "response" => LispraIdeas::userGetIdeas($user_id));
+        }
+
+        $json_api->error("U CANNOT PASS");
     }
 
 }

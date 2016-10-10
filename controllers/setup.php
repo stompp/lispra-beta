@@ -6,6 +6,7 @@
  * and open the template in the editor.
  */
 
+
 /*HELLO CONTROLLER*/
 function add_hello_controller($controllers) {
   $controllers[] = 'hello';
@@ -29,4 +30,16 @@ function set_lispra_beta_controller_path() {
 }
 add_filter('json_api_lispra_beta_controller_path', 'set_lispra_beta_controller_path');
 /*!LISPRA BETA CONTROLLER */
+
+/*LISPRA IDEAS CONTROLLER*/
+function add_lispra_ideas_controller($controllers) {
+  $controllers[] = 'lispra_ideas';
+  return $controllers;
+}
+add_filter('json_api_controllers', 'add_lispra_ideas_controller');
+function set_lispra_ideas_controller_path() {
+    return dirname(__FILE__) . '/lispra_ideas.php';
+}
+add_filter('json_api_lispra_ideas_controller_path', 'set_lispra_ideas_controller_path');
+/*!LISPRA IDEAS CONTROLLER */
 

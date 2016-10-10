@@ -13,6 +13,9 @@ License: GPLv2
 define('LISPRA_PATH', 'lispra/');
 define('LISPRA_LIB_PATH', '/lispra/');
 
+function locate_in_lispra($lispra_path){
+    return LISPRA_PATH.$lispra_path;
+}
 function get_lispra_lib_path(){
     return LISPRA_LIB_PATH;
 }
