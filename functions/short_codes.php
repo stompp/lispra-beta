@@ -49,10 +49,10 @@ function lispra_component_short_code($atts, $content,$tag) {
       if (function_exists("lispra_get_component_content")) {
           $output = lispra_get_component_content($tag,$atts,  $content);
 //        $output = call_user_func_array($api_func,array($tag,$atts,  $content));
-        if($output== FALSE) { return "<p>lispra_component_short_code false output</p>";}
+        if($output== FALSE) { return "<p>lispra_component_short_code false output for tag $tag</p>";}
         return $output;
     }  
-    return "<p>lispra_component_short_code ERROR $api_func not found</p>";
+    return "<p>lispra_get_component_content function doesn't exist</p>";
 
 }
 

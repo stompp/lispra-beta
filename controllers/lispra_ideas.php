@@ -58,10 +58,6 @@ class JSON_API_Lispra_ideas_Controller {
         return $o;
     }
 
-    private function pfunc() {
-        return array("message" => "im private");
-    }
-
     public function hello() {
         global $json_api;
         if (function_exists("wp_get_current_user")) {
@@ -82,27 +78,27 @@ class JSON_API_Lispra_ideas_Controller {
         $user_id = LispraCore::getCurrentLispraUserID();
 
         if ($user_id) {
-            $params = $this->getQueryDefaultParams(array("id" => NULL));
+            $params = $this->getQueryDefaultParams(array(LispraIdeas::IDEA_ID => NULL));
 
             return array(
-                "response" => LispraIdeas::userGet($user_id, $params["id"]));
+                "response" => LispraIdeas::userGet($user_id, $params[LispraIdeas::IDEA_ID]));
         }
         $json_api->error("U CANNOT PASS");
     }
 
-    //TODO
+    //DONE
     public function delete() {
         global $json_api;
         $user_id = LispraCore::getCurrentLispraUserID();
         if ($user_id) {
-            $params = $this->getQueryDefaultParams(array("id" => NULL));
+            $params = $this->getQueryDefaultParams(array(LispraIdeas::IDEA_ID => NULL));
             return array(
-                "response" => LispraIdeas::userDelete($user_id, $params["id"]));
+                "response" => LispraIdeas::userDelete($user_id, $params[LispraIdeas::IDEA_ID]));
         }
         $json_api->error("U CANNOT PASS");
     }
 
-    //TODO
+    //DONE
     public function create() {
         global $json_api;
         $user_id = LispraCore::getCurrentLispraUserID();
@@ -111,8 +107,8 @@ class JSON_API_Lispra_ideas_Controller {
                 LispraIdeas::IDEA_TITLE => "",
                 LispraIdeas::IDEA_DESC => "",
                 LispraIdeas::IDEA_TAGS => ""));
-            if(ArrayUtils::isKeyEmpty($data, LispraIdeas::IDEA_TITLE)){
-                $json_api->error(LispraIdeas::IDEA_TITLE." is empty");
+            if (ArrayUtils::isKeyEmpty($data, LispraIdeas::IDEA_TITLE)) {
+                $json_api->error(LispraIdeas::IDEA_TITLE . " is empty");
             }
             return array(
                 "response" => LispraIdeas::userCreate($user_id, $data));
@@ -120,15 +116,27 @@ class JSON_API_Lispra_ideas_Controller {
         $json_api->error("U CANNOT PASS");
     }
 
-    //TODO
+    //DONE
     public function update() {
-//        global $json_api;
-//        $user_id = LispraCore::getCurrentLispraUserID();
-//        if ($user_id) {
-//            $params = $this->getQueryDefaultParams(array("id" => NULL));
-//            return array(
-//                "response" => LispraIdeas::userUpdate($user_id,"", $params["id"]));
-//        }
+        global $json_api;
+        $user_id = LispraCore::getCurrentLispraUserID();
+        if ($user_id) {
+
+            $data = $this->getQueryDefaultParams(array(
+                LispraIdeas::IDEA_ID => 0,
+                LispraIdeas::IDEA_TITLE => "",
+                LispraIdeas::IDEA_DESC => "",
+                LispraIdeas::IDEA_TAGS => ""));
+
+            if (ArrayUtils::isKeyEmpty($data, LispraIdeas::IDEA_TITLE)) {
+                $json_api->error(LispraIdeas::IDEA_TITLE . " is empty");
+            } elseif ((intval($data[LispraIdeas::IDEA_ID])) < 1) {
+                $json_api->error(LispraIdeas::IDEA_ID . " not valid");
+            } else {
+                return array(
+                    "response" => LispraIdeas::userUpdate($user_id, $data[LispraIdeas::IDEA_ID], $data));
+            }
+        }
         $json_api->error("U CANNOT PASS");
     }
 
